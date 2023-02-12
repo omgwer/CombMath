@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "iostream"
 #include "vector"
 #include <boost/timer.hpp>
