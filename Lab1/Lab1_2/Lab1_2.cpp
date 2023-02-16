@@ -78,8 +78,8 @@ size_t GeneratePermutationWithJohnsonAlgorithm(const unsigned short vectorSize)
 			char test =  direction[i] == LEFT ? '<' : '>';
 			std::cout << " " << test;
 		}
-		std::cout << std::endl;
-		*/
+		std::cout << std::endl;*/
+		
 		for (int i = 0; i < vectorSize; ++i) //Search Max moving element
 		{
 			size_t currentElement = currentPermutation.at(i);

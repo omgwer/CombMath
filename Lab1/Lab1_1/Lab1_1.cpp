@@ -18,7 +18,7 @@ void PrintResult(const double, size_t, unsigned short);
  */
 int main(int argc, char* argv[])
 {
-	constexpr unsigned short vectorSize = 10;
+	constexpr unsigned short vectorSize = 13;
 	boost::timer timer;
 	timer.restart();
 	const size_t iterableCount = GeneratePermutationWithNarayanaAlgorithm(vectorSize);
