@@ -35,6 +35,7 @@ size_t GeneratePermutationWithNarayanaAlgorithm(const unsigned short vectorSize)
 	std::sort(v.begin(), v.end());
 	do
 	{
+		std::cout << iterablesCount;
 		iterablesCount++;
 	} while (std::next_permutation(v.begin(), v.end()));
 	return iterablesCount;
