@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
 {
     constexpr unsigned short vectorSize = 5;
    
-    добавить алгоритм сочетания  ( не нарайяна)  
-        6 slide
+   // добавить алгоритм сочетания  ( не нарайяна)  
+    //    6 slide
     
     GeneratePermutationWithNarayanaAlgorithm(vectorSize);
     return 0;
