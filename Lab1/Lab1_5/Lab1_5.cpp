@@ -3,8 +3,12 @@
 #include <vector>
 
 using namespace std;
-vector<vector<size_t>> GetCombination(size_t digitsCount, size_t maxDigit);
+vector<vector<size_t>> GetCombinations(size_t digitsCount, size_t maxDigit);
 size_t VectorSumma(vector<size_t> &vector);
+vector<size_t> GetSumm(size_t arraySizeForCombinations, size_t numbersCountForDelemiter, vector<size_t> &combinations);
+vector<vector<size_t>> GetSummVector(size_t arraySizeForCombinations, size_t numbersCountForDelemiter,
+                                     vector<vector<size_t>> &combinations);
+void PrintVector(vector<vector<size_t>> &summVector);
 /* 1.5. [# 15]
 	Реализовать алгоритм порождения композиции положительного числа 𝑛 в последовательность положительных целых чисел {𝑧_1, 𝑧_2, …, 𝑧_𝑘 \}, 𝑧_1+𝑧_2+…+𝑧_𝑘=𝑛.
 	Здесь учитывается порядок чисел 𝑧_𝑖 и 𝑧_𝑖>0.
@@ -14,11 +18,25 @@ size_t VectorSumma(vector<size_t> &vector);
 */
 int main(int argc, char *argv[])
 {
-    constexpr unsigned short vectorSize = 5;
-
-    // добавить алгоритм сочетания  ( не нарайяна)  
-    //    6 slide
-    vector<vector<size_t>> test = GetCombination(2, 4);
+    // число для разложения
+    size_t numberForComposition = 3;
+    cout << "For number is :" << numberForComposition << endl;
+    cout << numberForComposition << endl;
+    for (size_t i = 2; i < numberForComposition; i++)
+    {
+        // количество чисел, на которое раскладываем
+        size_t numbersCountForDelemiter = i; // это значение мы отложили, нужно потом запомнить
+        size_t arrayDelemiters = numbersCountForDelemiter - 1;
+        // размер массива для получения комбинаций
+        size_t arraySizeForCombinations = numberForComposition - numbersCountForDelemiter + arrayDelemiters;
+        vector<vector<size_t>> combinations = GetCombinations(arrayDelemiters, arraySizeForCombinations);
+        vector<vector<size_t>> summVector = GetSummVector(arraySizeForCombinations, numbersCountForDelemiter,
+                                                          combinations);
+        PrintVector(summVector);
+    }
+    for (size_t i = 0; i < numberForComposition; i++)
+        cout << "1 ";
+    cout << endl;
     return 0;
 }
 
@@ -27,7 +45,7 @@ int main(int argc, char *argv[])
  * @param digitsCount - количество цифр в сочетании
  * @param maxDigit - максимальное число
  */
-vector<vector<size_t>> GetCombination(const size_t digitsCount, const size_t maxDigit)
+vector<vector<size_t>> GetCombinations(const size_t digitsCount, const size_t maxDigit)
 {
     vector<size_t> combination(digitsCount + 1, 0);
     vector<vector<size_t>> combinationResult;
@@ -39,9 +57,11 @@ vector<vector<size_t>> GetCombination(const size_t digitsCount, const size_t max
     size_t m = 1;
     while (m != 0)
     {
-        combinationResult.push_back(combination);
-        copy(combination.begin() + 1, combination.end(), std::ostream_iterator<size_t>(std::cout, " "));
-        cout << endl;
+        auto tempVar = combination;
+        tempVar.erase(tempVar.begin());
+        combinationResult.push_back(tempVar);
+        //copy(combination.begin() + 1, combination.end(), std::ostream_iterator<size_t>(std::cout, " "));
+        //cout << endl;
         m = digitsCount;
         while (combination[m] == maxDigit - digitsCount + m)
             m--;
@@ -56,12 +76,62 @@ vector<vector<size_t>> GetCombination(const size_t digitsCount, const size_t max
     return combinationResult;
 }
 
-size_t VectorSumma(vector<size_t> &vector)
+/**
+ * Получение одной суммы числа
+ */
+vector<size_t> GetSumm(size_t arraySizeForCombinations, size_t numbersCountForDelemiter, vector<size_t> &combinations)
 {
-    size_t vectorSum = 0;
+    vector<size_t> summ;
+    //добавляем все слагаемые
+    for (size_t i = 0; i < numbersCountForDelemiter; i++)
+    {
+        size_t tmp = 0;
+        if (i + 1 == numbersCountForDelemiter) // это значит последнее значение
+        {
+            size_t tmptest = combinations[i - 1]; // последний элемент массива combinatoins
+            tmp = arraySizeForCombinations - tmptest;
+            // последнее значение = размерМассива -1 - последнее зачение в комбаниции.
+        }
+        else
+        {
+            tmp += combinations[i]; // добавляем текущее значение
+            // нужно посчитать сумму элемента, обходим прредыдущие значения
+            // for (size_t j = i; j > 0; j--) // вроде как не надо, мы должны вычитать предыдущийэ элемент
+            // {
+            //     tmp -= combinations[i - 1]; // теперь нужно вычесть предыдущие
+            // }
+            if (i > 0)
+                tmp -= combinations[i - 1];
+            
+            tmp--; // вычитаем единицу у всех значений, кроме последнего            
+        }
+        tmp++; // добавляем по единице каждому элементу, так как мы их брали до этого
+        summ.push_back(tmp);
+    }
+    return summ;
+}
 
-    // тут единица так как игнорирует 0 элемент вектора, там мусор
-    for (size_t i = 1; i < vector.size(); i++)
-        vectorSum += vector[i];
-    return vectorSum;
+/**
+ * Получение всех сумм числа с одинаковым количеством слагаемых
+ */
+vector<vector<size_t>> GetSummVector(size_t arraySizeForCombinations, size_t numbersCountForDelemiter,
+                                     vector<vector<size_t>> &combinations)
+{
+    vector<vector<size_t>> summVector;
+    vector<size_t> tmpSum;
+    for (size_t i = 0; i < combinations.size(); i++) // ищем всем варианты суммы 
+    {
+        tmpSum = GetSumm(arraySizeForCombinations, numbersCountForDelemiter, combinations.at(i));
+        summVector.push_back(tmpSum);
+    }
+    return summVector;
+}
+
+void PrintVector(vector<vector<size_t>> &summVector)
+{
+    for (size_t i = 0; i < summVector.size(); i++)
+    {
+        copy(summVector[i].begin(), summVector[i].end(), std::ostream_iterator<size_t>(std::cout, " "));
+        cout << endl;
+    }
 }
