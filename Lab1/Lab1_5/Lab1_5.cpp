@@ -19,7 +19,9 @@ void PrintVector(vector<vector<size_t>> &summVector);
 int main(int argc, char *argv[])
 {
     // число для разложения
+    cout << "Enter the number ";    
     size_t numberForComposition = 3;
+    cin >>numberForComposition;
     cout << "For number is :" << numberForComposition << endl;
     cout << numberForComposition << endl;
     for (size_t i = 2; i < numberForComposition; i++)
