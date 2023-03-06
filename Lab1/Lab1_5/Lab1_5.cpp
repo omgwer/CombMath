@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 {
     // число для разложения
     cout << "Enter the number ";    
-    size_t numberForComposition = 3;
+    size_t numberForComposition;
     cin >>numberForComposition;
     cout << "For number is :" << numberForComposition << endl;
     cout << numberForComposition << endl;
@@ -28,12 +28,10 @@ int main(int argc, char *argv[])
     {
         // количество чисел, на которое раскладываем
         size_t numbersCountForDelemiter = i; // это значение мы отложили, нужно потом запомнить
-        size_t arrayDelemiters = numbersCountForDelemiter - 1;
-        // размер массива для получения комбинаций
+        size_t arrayDelemiters = numbersCountForDelemiter - 1;         // размер массива для получения комбинаций
         size_t arraySizeForCombinations = numberForComposition - numbersCountForDelemiter + arrayDelemiters;
         vector<vector<size_t>> combinations = GetCombinations(arrayDelemiters, arraySizeForCombinations);
-        vector<vector<size_t>> summVector = GetSummVector(arraySizeForCombinations, numbersCountForDelemiter,
-                                                          combinations);
+        vector<vector<size_t>> summVector = GetSummVector(arraySizeForCombinations, numbersCountForDelemiter,combinations);
         PrintVector(summVector);
     }
     for (size_t i = 0; i < numberForComposition; i++)
@@ -62,14 +60,10 @@ vector<vector<size_t>> GetCombinations(const size_t digitsCount, const size_t ma
         auto tempVar = combination;
         tempVar.erase(tempVar.begin());
         combinationResult.push_back(tempVar);
-        //copy(combination.begin() + 1, combination.end(), std::ostream_iterator<size_t>(std::cout, " "));
-        //cout << endl;
         m = digitsCount;
         while (combination[m] == maxDigit - digitsCount + m)
             m--;
-
         combination[m] = combination[m] + 1;
-
         for (size_t i = m + 1; i <= digitsCount; i++)
         {
             combination[i] = combination[i - 1] + 1;
@@ -96,15 +90,9 @@ vector<size_t> GetSumm(size_t arraySizeForCombinations, size_t numbersCountForDe
         }
         else
         {
-            tmp += combinations[i]; // добавляем текущее значение
-            // нужно посчитать сумму элемента, обходим прредыдущие значения
-            // for (size_t j = i; j > 0; j--) // вроде как не надо, мы должны вычитать предыдущийэ элемент
-            // {
-            //     tmp -= combinations[i - 1]; // теперь нужно вычесть предыдущие
-            // }
+            tmp += combinations[i]; // добавляем текущее значение             // нужно посчитать сумму элемента, обходим прредыдущие значения
             if (i > 0)
-                tmp -= combinations[i - 1];
-            
+                tmp -= combinations[i - 1];            
             tmp--; // вычитаем единицу у всех значений, кроме последнего            
         }
         tmp++; // добавляем по единице каждому элементу, так как мы их брали до этого
