@@ -16,13 +16,8 @@
 // вершины, соединенные ребром (первое число – первая доля, второе – вторая).
 // */
 using namespace std;
-/**
- * @param v -
- * @param visited -
- * @param graph -
- * @param match -
- */
-bool dfs(int v, vector<bool>& visited, const vector<vector<int>>& graph, vector<int>& match)
+
+bool dfs(int v, vector<bool>& visited, vector<int>& match, const vector<vector<int>>& graph)
 {
     if (visited[v])
     {
@@ -33,8 +28,7 @@ bool dfs(int v, vector<bool>& visited, const vector<vector<int>>& graph, vector<
     for (size_t i = 0; i < graph[v].size(); i++)
     {
         int to = graph[v][i];
-        //если -1 то еще не добавлена
-        if (match[to] == -1 || dfs(match[to], visited, graph, match))
+        if (match[to] == -1 || dfs(match[to], visited, match, graph))
         {
             match[to] = v;
             return true;
@@ -43,49 +37,71 @@ bool dfs(int v, vector<bool>& visited, const vector<vector<int>>& graph, vector<
     return false;
 }
 
-vector<vector<int>> ParseTextFile(string fileName)
+void ParseTextFile(ifstream& in, vector<vector<int>>& graph, size_t size)
 {
-    int p, q;
-    string line;
-    ifstream in(fileName);
-    if (!in.is_open())
+    for (int i = 0; i < size; i++)
     {
-        throw exception("file not found!");
-    }
-    in >> p >> q;
-    vector<vector<int>> graph(p, vector<int>(q));
-
-    for (int i = 0; i < p; i++)
-    {
-        for (int j = 0; j < q; j++)
+        for (int j = 0; j < size; j++)
         {
             in >> graph[i][j];
         }
     }
     in.close();
-    return graph;
+}
+
+vector<int> FindCompleteMatching(vector<vector<int>>& arr, int size)
+{
+    vector<vector<int>> ribsList(size);
+    for (int i = 0; i < size; ++i)
+    {
+        for (int j = 0; j < size; ++j)
+        {
+            if (arr[i][j] == 1)
+            {
+                ribsList[i].push_back(j);
+            }
+        }
+    }
+
+    vector<int> matchingList(size, -1);
+    vector<bool> used;
+
+    for (int v = 0; v < size; ++v)
+    {
+        used.assign(size, false);
+        dfs(v, used, matchingList, ribsList);
+    }
+
+    return matchingList;
 }
 
 int main()
 {
     string fileName = "test.txt";
-    vector<vector<int>> graph = ParseTextFile(fileName);
-    vector<int> match(graph.at(0).size(), -1);
-
-    for (int v = 0; v < static_cast<int>(graph.size()); ++v)
+    ifstream input(fileName);
+    if (!input.is_open())
     {
-        vector<bool> visited(graph.size(), false);
-        dfs(v, visited, graph, match);
+        cout << "File not found";
+        return 1;
     }
+    int matrixSize, rowSize;
+    input >> matrixSize >> rowSize;
 
-    if (find(match.begin(), match.end(), -1) != match.end()) {
+    vector<vector<int>> graph(matrixSize, vector<int>(matrixSize, 0));
+    ParseTextFile(input, graph, matrixSize);
+
+    vector<int> match = FindCompleteMatching(graph, matrixSize);
+
+    if (find(match.begin(), match.end(), -1) != match.end())
+    {
         cout << "No" << endl;
     }
-    else {
+    else
+    {
         cout << "Yes" << endl;
         for (int i = 0; i < graph.size(); ++i)
         {
-            cout << match[i] << ", " << i << endl;
+            cout << match[i] + 1 << ", " << i + 1 << endl;
         }
     }
 
