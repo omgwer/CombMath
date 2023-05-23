@@ -30,6 +30,7 @@ vector<int> colorGraph(const vector<vector<int>>& graph) {
             if (graph[i][j] == 1 && colors[j] != 0) {
                 usedColors[colors[j] - 1] = true;
             }
+            ++iterationCount;
         }
 
         // Ищем первый доступный цвет для текущей вершины
@@ -67,6 +68,9 @@ int main() {
     for (int i = 0; i < v; i++) {
         cout << (i + 1) << " " << colors[i] << endl;
     }
+
+
+    cout << "Iterations = "<< iterationCount << endl;
 
     return 0;
 }
